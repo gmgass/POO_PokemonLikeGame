@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Random;
+
 public class PokemonGrass extends Pokemon {
 
     // ----- CONSTRUTOR -----
@@ -20,9 +22,33 @@ public class PokemonGrass extends Pokemon {
         };
     }
 
+    // -----------------------------------------------------------------------------------------
+    // HABILIDADE: CURA
+    // 10% de chance de curar até 100% do dano causado.
+    // 40% de chance de curar até 66% do dano causado.
+    // 50% de chance de curar até 33% do dano causado.
+    // -----------------------------------------------------------------------------------------
     @Override
-    public double getTypeAbility() {
+    public double getAbilityDamage( Pokemon target ) {
         return 1.0;
+    }
+
+    @Override
+    public void applyAbilityEffect( Pokemon target, int damage ) {
+        Random random = new Random();
+        int roll = random.nextInt( 5 );
+        int healAmount = 0;
+
+        switch ( roll ) {
+            case 0:     { healAmount = random.nextInt( damage ); } break;
+            case 1, 2:  { healAmount = (int) random.nextInt( damage * 2.0 / 3.0 ); } break;
+            case 3, 4:  { healAmount = (int) random.nextInt( damage * 1/3 ); } break;
+        }
+
+        this.health += healAmount;
+        if ( this.health > this.maxHealth ) {
+            this.health = this.maxHealth;
+        }
     }
 }
 

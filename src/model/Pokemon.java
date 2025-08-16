@@ -44,22 +44,34 @@ public abstract class Pokemon implements Serializable {
 
     //  --- COMBATE ----------------------------------------------------------------------------
     public abstract double getTypeAdvantage( Pokemon target );
-    public abstract double getTypeAbility( Pokemon target );
+    public abstract double getAbilityDamage( Pokemon target );
+    public abstract void applyAbilityEffect( Pokemon target, int damage );
 
     /**
      * Método de ataque comum a todos os Pokémons e que inicia a lógica de ataque.
      * @param target Pokemon alvo do ataque.
-     * @return finalDamage = baseDamage * typeAdvantage * typeAbility;
+     * @return finalDamage = baseDamage * typeAdvantage * abilityDamage;
      */
     public final void attack( Pokemon target ) {
+
+        // Verificação do status de paralisia:
+        if ( this.isParalyzed ) {
+            System.out.println( this.getName() + " está paralisado e não pode atacar." );
+            this.setParalyzed( false );
+
+            return;
+        }
+
         System.out.println( this.getName() + " ataca " + target.getName() + "!" );
 
         int baseDamage = this.getBaseDamage();
         double typeAdvantage = this.getTypeAdvantage( target );
-        double typeAbility = this.getTypeAbility( target );
+        double abilityDamage = this.getAbilityDamage( target );
 
-        int finalDamage = (int) (baseDamage * typeAdvantage * typeAbility);
+        int finalDamage = (int) (baseDamage * typeAdvantage * abilityDamage);
         target.takeDamage( finalDamage );
+
+        this.applyAbilityEffect( target, finalDamage );
     }
 
     protected int getBaseDamage() {

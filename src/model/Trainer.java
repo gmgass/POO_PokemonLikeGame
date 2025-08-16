@@ -4,25 +4,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Representa um Treinador (jogador ou computador) no jogo.
- * Contém o time de Pokémons, a mochila e a pontuação.
- * Implementa Serializable para permitir salvar o jogo.
- */
+
 public class Trainer implements Serializable {
 
-    // ----- ATRIBUTOS -----
+    //atributos
     private String name;
     private List<Pokemon> team;
-    private List<Pokemon> backpack; // Mochila para armazenar Pokémons capturados 
-    private int score;             // Pontuação do time [cite: 313]
+    private List<Pokemon> backpack; 
+    private int score;
     private boolean isComputer;
 
-    // ----- CONSTRUTOR -----
     /**
-     * Cria um novo treinador.
-     * @param name O nome do treinador (ex: "Jogador" ou "Computador").
-     * @param isComputer Define se o treinador é controlado pelo computador.
+     * @param name
+     * @param isComputer
      */
     public Trainer(String name, boolean isComputer) {
         this.name = name;
@@ -32,26 +26,21 @@ public class Trainer implements Serializable {
         this.score = 0;
     }
 
-    //  ================================================================================================
-    //  --- MÉTODOS ---
-    //  ================================================================================================
+    //metodos
 
     /**
-     * Adiciona um Pokémon inicial ao time do treinador.
-     * Conforme o PDF, cada treinador começa com um Pokémon. 
-     * @param pokemon O Pokémon a ser adicionado.
+     * adiciona inicial no time
+     * @param pokemon a ser adicionado.
      */
     public void addInitialPokemon(Pokemon pokemon) {
         if (this.team.isEmpty()) {
-            pokemon.setWild(false); // O Pokémon inicial pertence ao treinador
+            pokemon.setWild(false);
             this.team.add(pokemon);
             updateScore();
         }
     }
 
-    /** 8============D
-     * capturar um Pokémon selvagem. 
-     * A lógica de captura é baseada em 50% de chance, como "lançar uma moeda". 
+    /** 
      * @param wildPokemon pokemom selvagem
      * @return true se capturado, false caso nao.
      */

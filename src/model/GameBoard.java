@@ -14,9 +14,44 @@ public class GameBoard implements Serializable {
 
         this.size = size;
         this.grid = new BoardCell[size][size];
+
+        initCells();
     }
 
-    public int getTamanho() {
-        return this.size;
+    //metodos publicos
+    public void placePokemon(Pokemon pokemon, int row, int col) throws IllegalArgumentException{
+        BoardCell cell = getCellAt(row, col);
+        
+    }
+
+    public int getSize()  { return this.size; }
+    
+    public BoardCell getCellAt(int row, int col) {
+        if(row > size - 1 || col > size - 1){
+            throw new IllegalArgumentException("Posição do grid inválida.");
+        }
+        return this.grid[row][col]; 
+    }
+
+    //metodos privados
+    private void initCells(){
+        int mid = size / 2;
+
+        for(int row = 0; row < size - 1; row++){
+            for(int col = 0; col < size - 1; col++){
+                
+                //determina qual a região da celula atual
+                if(row < mid && col < mid){
+                    this.grid[row][col] = new BoardCell(PokemonType.WATER);
+                }else if(row < mid && col > mid){
+                    this.grid[row][col] = new BoardCell(PokemonType.GRASS);
+                }else if(row >= mid && col < mid){
+                    this.grid[row][col] = new BoardCell(PokemonType.GROUND);
+                }else{
+                    this.grid[row][col] = new BoardCell(PokemonType.ELECTRIC);
+                }
+
+            }
+        }
     }
 }

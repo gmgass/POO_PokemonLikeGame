@@ -27,7 +27,12 @@ public class PokemonElectric extends Pokemon {
     // 50% de chance de causar paralisia contra pokémons do tipo ÁGUA.
     // -----------------------------------------------------------------------------------------
     @Override
-    public double getTypeAbility( Pokemon target ) {
+    public double getAbilityDamage( Pokemon target ) {
+        return 1.0;
+    }
+
+    @Override
+    public void applyAbilityEffect( Pokemon target ){
         PokemonType targetType = target.getType();
         Random random = new Random();
         
@@ -36,7 +41,5 @@ public class PokemonElectric extends Pokemon {
             case GRASS:             if ( random.nextInt( 3 ) == 0 ) { target.setParalyzed( true ); } break;
             case WATER:             if ( random.nextInt( 2 ) == 0 ) { target.setParalyzed( true ); } break;
         }
-
-        return 1.0;
     }
 }

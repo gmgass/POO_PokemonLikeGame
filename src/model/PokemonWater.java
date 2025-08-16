@@ -21,7 +21,7 @@ public class PokemonWater extends Pokemon {
     }
 
     @Override
-    public double getTypeAbility() {
+    public double getAbilityDamage( Pokemon target ) {
         return 1.0;
     }
 
