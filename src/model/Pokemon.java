@@ -43,10 +43,27 @@ public abstract class Pokemon implements Serializable {
 //  ================================================================================================
 
     //  --- COMBATE ----------------------------------------------------------------------------
-        // ADICIONAR: Fugir ( ou isso vai na classe de treinador? )
-    public abstract void attack( Pokemon target );
+    
+    public abstract double getTypeAdvantage( Pokemon target );
+    public abstract double getTypeAbility();
 
-    protected int calculateBaseDamage() {
+    /**
+     * Método de ataque comum a todos os Pokémons e que inicia a lógica de ataque.
+     * @param target Pokemon alvo do ataque.
+     * @return finalDamage = baseDamage * typeAdvantage * typeAbility;
+     */
+    public final void attack( Pokemon target ) {
+        System.out.println( this.getName() + " ataca " + target.getName() + "!" );
+
+        int baseDamage = this.getBaseDamage();
+        double typeAdvantage = this.getTypeAdvantage( target );
+        double typeAbility = this.getTypeAbility();
+
+        int finalDamage = (int) (baseDamage * typeAdvantage * typeAbility);
+        target.takeDamage( finalDamage );
+    }
+
+    protected int getBaseDamage() {
         return this.attack + new Random().nextInt( this. level + 1 );
     }
 
