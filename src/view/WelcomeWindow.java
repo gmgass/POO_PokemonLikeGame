@@ -2,7 +2,7 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-import kava.awt.event.*;
+import java.awt.event.*;
 
 
 public class WelcomeWindow extends JFrame{
@@ -16,8 +16,10 @@ public class WelcomeWindow extends JFrame{
         setLocationRelativeTo(null);
 
         //instancia containers
-        JPanel mainPanel = new JPanel( new BoxLayout(mainPanel, BoxLayout.Y_AXIS) );
-        JPanel buttonPanel = new JPanel( new BoxLayout(buttonPanel, BoxLayout.Y_AXIS) );
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
         //cria componentes
         JLabel welcomeLabel = new JLabel("Selecione uma opção para continuar:");
@@ -34,5 +36,27 @@ public class WelcomeWindow extends JFrame{
         mainPanel.add(buttonPanel);
 
         this.add(mainPanel);
+
+        //implenta açoes para os botoes
+        newGame.addActionListener( new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                //CHAMAR JANELA SETUPWINDOW
+            }
+        });
+
+        loadGame.addActionListener( new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                //CARREGAR ARQUIVO DE JOGO PASSADO
+            }
+        });
+
+        randomGame.addActionListener( new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                //GERAR DISTRIBUIÇÃO ALEATORIA DE POKEMONS NO TABULEIRO
+            }
+        });
     }
 }

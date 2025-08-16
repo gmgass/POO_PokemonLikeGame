@@ -43,9 +43,8 @@ public abstract class Pokemon implements Serializable {
 //  ================================================================================================
 
     //  --- COMBATE ----------------------------------------------------------------------------
-    
     public abstract double getTypeAdvantage( Pokemon target );
-    public abstract double getTypeAbility();
+    public abstract double getTypeAbility( Pokemon target );
 
     /**
      * Método de ataque comum a todos os Pokémons e que inicia a lógica de ataque.
@@ -57,7 +56,7 @@ public abstract class Pokemon implements Serializable {
 
         int baseDamage = this.getBaseDamage();
         double typeAdvantage = this.getTypeAdvantage( target );
-        double typeAbility = this.getTypeAbility();
+        double typeAbility = this.getTypeAbility( target );
 
         int finalDamage = (int) (baseDamage * typeAdvantage * typeAbility);
         target.takeDamage( finalDamage );

@@ -11,13 +11,13 @@ public class PokemonWater extends Pokemon {
     public double getTypeAdvantage( Pokemon target ) {
         PokemonType targetType = target.getType();
 
-        switch( targetType ) {
-            case ELECTRIC: return 1.0;
-            case GRASS: return 0.5;
-            case GROUND: return 1.5;
-            case WATER: return 1.0;
-            default: return 1.0;
-        }
+        return switch ( targetType ) {
+            case ELECTRIC -> 1.0;
+            case GRASS -> 0.5;
+            case GROUND -> 1.5;
+            case WATER -> 1.0;
+            default -> 1.0;
+        };
     }
 
     @Override
