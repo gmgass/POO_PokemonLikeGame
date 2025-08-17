@@ -1,14 +1,10 @@
 package view;
 
 import java.awt.*;
-import java.util.List;
 import javax.swing.*;
 import model.*;
 
-/**
- * Janela para o modo DEBUG.
- * Permite ao usuário posicionar os Pokémons no tabuleiro.
- */
+
 public class SetupWindow extends JFrame {
     
     private final int WIDTH = 800;

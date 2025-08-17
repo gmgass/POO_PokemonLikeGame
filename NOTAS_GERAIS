@@ -1,0 +1,28 @@
+Guys, bloco de notas coletivo.
+
+----------------------------------------------------------------------------------------------------
+# EXCEÇÕES
+
+## classe GameBoard
+    
+### construtor
+- IllegalArgumentException
+
+### placePokemon
+- IllegalArgumentException(do metodo getCellAt)
+- InvalidPositionException - pokemon ta na região errada (tem q criar) 
+
+### getCellAt
+- IllegalArgumentException
+
+### GamePersistence 
+- IOException - erro ao acessar arquivo (metodo loadGame e saveGame)
+- ClassNotFoundException -  arquivo de save incompativel (metodo loadGame)
+
+----------------------------------------------------------------------------------------------------
+
+# CORREÇÕES NECESSÁRIAS:
+
+# PokemonGrass
+    Divisões das chances de cura.
+
