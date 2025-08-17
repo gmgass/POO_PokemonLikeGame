@@ -1,8 +1,12 @@
 package view;
 
 import javax.swing.*;
+
+import model.GameBoard;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 
 public class WelcomeWindow extends JFrame{
@@ -16,7 +20,7 @@ public class WelcomeWindow extends JFrame{
 
         //instancia containers
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setLayout(new BorderLayout());
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
@@ -31,16 +35,25 @@ public class WelcomeWindow extends JFrame{
         buttonPanel.add(loadGame);
         buttonPanel.add(randomGame);
 
-        mainPanel.add(welcomeLabel);
-        mainPanel.add(buttonPanel);
+        mainPanel.add(welcomeLabel, BorderLayout.NORTH);
+        mainPanel.add(buttonPanel, BorderLayout.CENTER);
 
         this.add(mainPanel);
+
+        setVisible(true);
 
         //implenta açoes para os botoes
         newGame.addActionListener( new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
                 //CHAMAR JANELA SETUPWINDOW
+                model.GameBoard board = new GameBoard(8);
+                ArrayList<model.Pokemon> list = new ArrayList<>();
+
+                new SetupWindow(board, list);
+
+                WelcomeWindow.this.dispose();
+
             }
         });
 

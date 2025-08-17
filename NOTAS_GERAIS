@@ -23,6 +23,14 @@ Guys, bloco de notas coletivo.
 
 # CORREÇÕES NECESSÁRIAS:
 
-# PokemonGrass
+## PokemonGrass
     Divisões das chances de cura.
 
+----------------------------------------------------------------------------------------------------
+
+# IMPLEMENTAÇÕES NECESSÁRIAS
+
+## package view
+
+### WelcomeWindow e SetupWindow
+    implementar todos os actionListeners para fazer as janelas funcionarem
