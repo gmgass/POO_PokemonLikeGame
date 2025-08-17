@@ -21,6 +21,11 @@ public class PokemonGround extends Pokemon {
         };
     }
 
+    @Override
+    public String toString() {
+        return this.name + " Tipo: Terra";
+    }
+
     // -----------------------------------------------------------------------------------------
     // HABILIDADE: DANO DOBRADO
     // Causa 200% de dano em turno ímpar.

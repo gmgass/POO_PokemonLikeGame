@@ -20,6 +20,11 @@ public class PokemonWater extends Pokemon {
         };
     }
 
+    @Override
+    public String toString() {
+        return this.name + " Tipo: Água";
+    }
+
     // LEMBRANDO QUE A VANTAGEM DO POKEMON DE ÁGUA É EM RELAÇÃO AO TERRENO. DEVE SER MODIFICADO DEPOIS.
     @Override
     public double getAbilityDamage( Pokemon target ) {

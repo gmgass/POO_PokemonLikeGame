@@ -3,6 +3,8 @@ package view;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
+
+import exception.InvalidPositionException;
 import model.*;
 
 
@@ -17,6 +19,7 @@ public class SetupWindow extends JFrame {
     private JList<Pokemon> pokemonJList;
     private JLabel statusLabel;
     private JButton startGameButton;
+    private JButton debugButton;
 
     //construtor
     public SetupWindow(GameBoard board, List<Pokemon> pokemonCompleteList){
@@ -36,7 +39,7 @@ public class SetupWindow extends JFrame {
         this.add(pokemonList, BorderLayout.EAST);
         this.add(statusPanel, BorderLayout.SOUTH);
 
-        //CHAMAR MÉTODO setupEventListeners() QUE VAI CONFIGURAR OS EVENTOS DE TODOS OS BOTOES
+        setupEventListeners();
 
         setVisible(true);
     }
@@ -58,7 +61,17 @@ public class SetupWindow extends JFrame {
                 JButton button = new JButton();
                 BoardCell cell = board.getCellAt(row, col);
 
-                //DEFINIR A COR DE button COM BASE NA REGIAO DE cell
+                if(cell.getRegion() == PokemonType.ELECTRIC){
+                    button.setBackground(new Color(209, 185, 14));
+                }else if(cell.getRegion() == PokemonType.GRASS){
+                    button.setBackground(new Color(48, 185, 14));
+                }else if(cell.getRegion() == PokemonType.GROUND){
+                    button.setBackground(new Color(103, 50, 9));
+                }else if(cell.getRegion() == PokemonType.WATER){
+                    button.setBackground(new Color(25, 198, 210));
+                }
+
+                button.setOpaque(true);
                 
                 this.cellButtons[row][col] = button;
                 boardPanel.add(button); 
@@ -78,7 +91,7 @@ public class SetupWindow extends JFrame {
         this.startGameButton = startButton;
 
         JButton debugButton = new JButton("DEBUG MODE");
-        this.startGameButton = debugButton;
+        this.debugButton = debugButton;
 
         panel.add(status, BorderLayout.CENTER);
         panel.add(startButton, BorderLayout.EAST);
@@ -88,22 +101,83 @@ public class SetupWindow extends JFrame {
     }
 
     private JPanel createPokemonListPanel( List<Pokemon> pokemonList ){
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        JPanel panel = new JPanel(new BorderLayout());
 
         DefaultListModel<Pokemon> listModel = new DefaultListModel<Pokemon>();
 
         for (Pokemon pokemon : pokemonList) {
             listModel.addElement(pokemon);
         }
-
         this.pokemonListModel = listModel;
+        
         JList<Pokemon> jList = new JList<Pokemon>(listModel);
+        this.pokemonJList = jList;
 
         JScrollPane scrollPane = new JScrollPane(jList);
 
         panel.add(scrollPane);
         
         return panel;
+    }
+
+    private void setupEventListeners(){
+        
+        //configura listener para a lista de pokemons
+        pokemonJList.addListSelectionListener(e -> {
+            if(!e.getValueIsAdjusting()){       //evita ser disparado 2x(uma quando pressiona o botao e uma quando solta)
+                selectedPokemon = pokemonJList.getSelectedValue();
+
+                if(this.selectedPokemon != null){
+                    statusLabel.setText("Selecionado:" + this.selectedPokemon.getName());
+                }
+            }
+        });
+    
+        //configura listener para tabuleiro
+        for(int row = 0; row < board.getSize(); row++){
+            for(int col = 0; col < board.getSize(); col++){
+                
+                //gemini mando, tenho q entender
+                final int finalRow = row;
+                final int finalCol = col;
+
+                JButton button = this.cellButtons[row][col];
+
+                button.addActionListener(e -> {
+                    if(this.selectedPokemon == null){
+                        statusLabel.setText("ERRO: Selecione um Pokemon antes de jogar");
+                        return;
+                    }
+
+                    try {
+                        board.placePokemon(selectedPokemon, finalRow, finalCol);
+
+                        button.setText(selectedPokemon.getName());
+                        button.setEnabled(false);
+
+                        pokemonListModel.removeElement(selectedPokemon);
+                        
+                        this.selectedPokemon = null;
+                        pokemonJList.clearSelection();
+
+                        statusLabel.setText("Pokémon posicionado com sucesso.");
+
+                    } catch (InvalidPositionException ex) {
+                        statusLabel.setText("ERRO:" + ex.getMessage());
+                    }
+                });
+            }
+        }
+
+        //configura listener para botoes start e debug
+
+        startGameButton.addActionListener(e -> {
+            new MainGameWindow(this.board);
+            this.dispose();
+        });
+
+        debugButton.addActionListener(e -> {
+            //TODO: permitir que a lista mostre todos os pokemons e nao só os do jogador
+        });
     }
 }

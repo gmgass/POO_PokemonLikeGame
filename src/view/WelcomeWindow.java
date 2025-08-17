@@ -2,7 +2,7 @@ package view;
 
 import javax.swing.*;
 
-import model.GameBoard;
+import model.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -49,6 +49,11 @@ public class WelcomeWindow extends JFrame{
                 //CHAMAR JANELA SETUPWINDOW
                 model.GameBoard board = new GameBoard(8);
                 ArrayList<model.Pokemon> list = new ArrayList<>();
+                
+                list.add(new PokemonGround("Steelix", 100, 10));
+                list.add(new PokemonElectric("Pikachu", 100, 10));
+                list.add(new PokemonWater("Squirtle", 100, 10));
+                list.add(new PokemonGrass("Bulbasaur", 100, 10));
 
                 new SetupWindow(board, list);
 

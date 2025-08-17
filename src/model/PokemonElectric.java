@@ -20,6 +20,11 @@ public class PokemonElectric extends Pokemon {
         };
     }
 
+    @Override
+    public String toString() {
+        return this.name + " Tipo: Elétrico";
+    }
+
     // -----------------------------------------------------------------------------------------
     // HABILIDADE: PARALISIA
     // 25% de chance de causar paralisia contra pokémons do tipo ELÉTRICO e TERRA.

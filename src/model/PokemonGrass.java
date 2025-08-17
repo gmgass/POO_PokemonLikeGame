@@ -22,6 +22,11 @@ public class PokemonGrass extends Pokemon {
         };
     }
 
+    @Override
+    public String toString() {
+        return this.name + " Tipo: Grama";
+    }
+
     // -----------------------------------------------------------------------------------------
     // HABILIDADE: CURA
     // 10% de chance de curar até 100% do dano causado.
