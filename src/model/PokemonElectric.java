@@ -32,7 +32,7 @@ public class PokemonElectric extends Pokemon {
     }
 
     @Override
-    public void applyAbilityEffect( Pokemon target ){
+    public void applyAbilityEffect( Pokemon target, int damage ) {
         PokemonType targetType = target.getType();
         Random random = new Random();
         

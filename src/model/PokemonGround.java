@@ -1,6 +1,10 @@
 package model;
 
+import java.util.Random;
+
 public class PokemonGround extends Pokemon {
+
+    private static int turnCounter = 1;    // Pode náo. DEVE ser static
 
     // ----- CONSTRUTOR -----
     public PokemonGround( String name, int maxHealth, int attack ) {
@@ -12,18 +16,34 @@ public class PokemonGround extends Pokemon {
         PokemonType targetType = target.getType();
 
         return switch ( targetType ) {
-            case ELECTRIC -> 1.0;
-            case GRASS -> 1.0;
-            case GROUND -> 1.0;
             case WATER -> 0.5;
-            default -> 1.0;
+            default -> 1.0; // ELECTRIC, GRASS, GROUND.
         };
     }
 
+    // -----------------------------------------------------------------------------------------
+    // HABILIDADE: DANO DOBRADO
+    // Causa 200% de dano em turno ímpar.
+    // 20% de chance de causar 150% de dano em turno par.
+    // -----------------------------------------------------------------------------------------
     @Override
     public double getAbilityDamage( Pokemon target ) {
+        
+        if ( turnCounter % 2 != 0 ) {
+            return 2.0;
+        } else {
+            Random random = new Random();
+            if ( random.nextInt( 5 ) == 0 ) {
+                return 1.5;
+            }
+        }
+        turnCounter++;
+
         return 1.0;
     }
+
+    @Override
+    public void applyAbilityEffect( Pokemon target, int damage ) {}
 }
 
 

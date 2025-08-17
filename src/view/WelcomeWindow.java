@@ -7,7 +7,6 @@ import java.awt.event.*;
 
 public class WelcomeWindow extends JFrame{
 
-
     public WelcomeWindow(){
         //inicializa a janela
         super("Tela Inicial - Pokémon");

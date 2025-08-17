@@ -35,13 +35,15 @@ public class PokemonGrass extends Pokemon {
 
     @Override
     public void applyAbilityEffect( Pokemon target, int damage ) {
+        if ( damage == 0 ) return;
+
         Random random = new Random();
         int roll = random.nextInt( 5 );
         int healAmount = 0;
 
         switch ( roll ) {
             case 0:     { healAmount = random.nextInt( damage ); } break;
-            case 1, 2:  { healAmount = (int) random.nextInt( damage * 2.0 / 3.0 ); } break;
+            case 1, 2:  { healAmount = (int) random.nextInt( damage * 2/3 ); } break;
             case 3, 4:  { healAmount = (int) random.nextInt( damage * 1/3 ); } break;
         }
 

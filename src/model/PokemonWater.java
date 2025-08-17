@@ -20,12 +20,15 @@ public class PokemonWater extends Pokemon {
         };
     }
 
+    // LEMBRANDO QUE A VANTAGEM DO POKEMON DE ÁGUA É EM RELAÇÃO AO TERRENO. DEVE SER MODIFICADO DEPOIS.
     @Override
     public double getAbilityDamage( Pokemon target ) {
         return 1.0;
     }
 
-    // LEMBRANDO QUE A VANTAGEM DO POKEMON DE ÁGUA É EM RELAÇÃO AO TERRENO. DEVE SER MODIFICADO DEPOIS.
+    @Override
+    public void applyAbilityEffect( Pokemon target, int damage ) {}
+
     // Override pra aplicar a habilidade defensiva dos pokémons tipo ÁGUA.
     @Override
     public void takeDamage( int damage ) {
