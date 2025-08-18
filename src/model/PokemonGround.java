@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class PokemonGround extends Pokemon {
 
-    private static int turnCounter = 1;    // Pode náo. DEVE ser static
+    private int turnCounter = 1;    // Pode náo. DEVE ser static
 
     // ----- CONSTRUTOR -----
     public PokemonGround( String name, int maxHealth, int attack ) {

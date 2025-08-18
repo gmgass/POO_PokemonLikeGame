@@ -1,6 +1,8 @@
 package model;
 
-public class BoardCell{
+import java.io.Serializable;
+
+public class BoardCell implements Serializable{
     private final PokemonType region;
     private Pokemon pokemon;
     private boolean isRevealed;

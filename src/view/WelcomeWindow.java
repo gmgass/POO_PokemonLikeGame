@@ -26,8 +26,8 @@ public class WelcomeWindow extends JFrame{
 
         //cria componentes
         JLabel welcomeLabel = new JLabel("Selecione uma opção para continuar:");
-        JButton newGame = new JButton("Distribuir time Pokémon.");
-        JButton loadGame = new JButton("Carregar jogo salvo.");
+        JButton newGame = new JButton("Novo jogo.");
+        JButton loadGame = new JButton("Carregar jogo.");
         JButton randomGame =  new JButton("Distribuir aleatóriamente.");
 
         //add componentes nos containers

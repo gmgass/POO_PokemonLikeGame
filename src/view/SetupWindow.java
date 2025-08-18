@@ -160,7 +160,7 @@ public class SetupWindow extends JFrame {
                         this.selectedPokemon = null;
                         pokemonJList.clearSelection();
 
-                        statusLabel.setText("Pokémon posicionado com sucesso.");
+                        statusLabel.setText("Selecione um Pokémon da lista e clique no tabuleiro.");
 
                     } catch (InvalidPositionException ex) {
                         statusLabel.setText("ERRO:" + ex.getMessage());
