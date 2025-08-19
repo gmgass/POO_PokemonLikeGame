@@ -1,111 +1,76 @@
 package model.game;
 
+import exception.InvalidPositionException;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import controller.Observer;
 import model.pokemon.Pokemon;
+import model.pokemon.PokemonType;
 
+public class GameBoard implements Serializable {
 
-public class GameState implements Serializable {
-    
-    // atributos
-    private Trainer player;
-    private Trainer computer;
-    private GameBoard board;
-    private boolean isPlayerTurn = true; // controla de quem é o turno
-    private int hintsRemaining = 3; // controla as dicas
-    // Poderíamos adicionar mais coisas aqui no futuro, como o turno atual.
+    private final int size;
+    private final BoardCell[][] grid;
 
-    // atributo para o observer
-    // transient para evitar que a lista de observadores seja serializada
-    private transient List<Observer> observers = new ArrayList<>();
-
-    // construtor
-    public GameState(Trainer player, Trainer computer, GameBoard board) {
-        this.player = player;
-        this.computer = computer;
-        this.board = board;
-    }
-   
-    // métodos observer
-    public void addObserver(Observer observer) {
-        if (observers == null) {
-            observers = new ArrayList<>();
+    public GameBoard(int size) {
+        if (size % 2 != 0) {
+            throw new IllegalArgumentException("O tabuleiro deve ter tamanho par");
         }
-        
-        observers.add(observer);
+        this.size = size;
+        this.grid = new BoardCell[size][size];
+        initCells();
     }
 
-    public void removeObserver(Observer observer) {
-        if (observers != null) {
-            observers.remove(observer);
-        }
-    }
-
-    public void notifyObservers() {
-        if (observers != null) {
-            for (Observer observer : observers) {
-                observer.update(this);
-            }
-        }
-    }
-
-    // setters
-    public void setPlayerTurn(boolean isPlayerTurn) {
-        this.isPlayerTurn = isPlayerTurn;
-    }
-
-    public void decrementPlayerHints() {
-        if (hintsRemaining > 0) {
-            this.hintsRemaining--;
-        }
-    }
-    
-    public void setBoard(GameBoard board) {
-        this.board = board;
-    }
-
-    public void setPlayer(Trainer player) {
-        this.player = player;
-    }
-
-    public void setComputer(Trainer computer) {
-        this.computer = computer;
-    }
-
-    // getters
-    public Trainer getPlayer() {
-        return player;
-    }
-
-    public Trainer getComputer() {
-        return computer;
-    }
-
-    public GameBoard getBoard() {
-        return board;
-    }
-
-    public boolean isPlayerTurn() {
-        return isPlayerTurn;
-    }
-
-    public int getHintsRemaining() {
-        return hintsRemaining;
-    }
-
-    // método para verificar o fim do jogo
-    public boolean isGameOver() {
-        // o jogo termina quando não há mais pokémons selvagens no tabuleiro
-        for (int row = 0; row < board.getSize(); row++) {
-            for (int col = 0; col < board.getSize(); col++) {
-                Pokemon p = board.getCellAt(row, col).getPokemon();
-                if (p != null && p.isWild()) {
-                    return false; // se encontrar um selvagem, o jogo não acabou
+    public void distribuirPokemonsAleatoriamente(List<Pokemon> wildPokemons) {
+        Collections.shuffle(wildPokemons);
+        for (Pokemon p : wildPokemons) {
+            boolean posicionado = false;
+            while (!posicionado) {
+                int linha = (int) (Math.random() * size);
+                int coluna = (int) (Math.random() * size);
+                BoardCell cell = getCellAt(linha, coluna);
+                if (cell.getPokemon() == null && cell.getRegion() == p.getType()) {
+                    cell.setPokemon(p);
+                    posicionado = true;
                 }
             }
         }
-        return true; // se o loop terminar, não há mais selvagens
+    }
+
+    public void placePokemon(Pokemon pokemon, int row, int col) throws InvalidPositionException {
+        BoardCell cell = getCellAt(row, col);
+        if (cell.getRegion() != pokemon.getType()) {
+            throw new InvalidPositionException("Região inválida para tipo de Pokemon.");
+        }
+        if (cell.getPokemon() != null) {
+            throw new InvalidPositionException("Essa posição já está ocupada.");
+        }
+        cell.setPokemon(pokemon);
+    }
+
+    public int getSize() { return this.size; }
+    
+    public BoardCell getCellAt(int row, int col) {
+        if (row >= size || col >= size || row < 0 || col < 0) {
+            throw new IllegalArgumentException("Posição do grid inválida.");
+        }
+        return this.grid[row][col]; 
+    }
+
+    private void initCells() {
+        int mid = size / 2;
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                if (row < mid && col < mid) {
+                    this.grid[row][col] = new BoardCell(PokemonType.WATER);
+                } else if (row < mid && col >= mid) {
+                    this.grid[row][col] = new BoardCell(PokemonType.GRASS);
+                } else if (row >= mid && col < mid) {
+                    this.grid[row][col] = new BoardCell(PokemonType.GROUND);
+                } else {
+                    this.grid[row][col] = new BoardCell(PokemonType.ELECTRIC);
+                }
+            }
+        }
     }
 }
