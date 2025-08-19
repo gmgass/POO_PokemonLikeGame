@@ -1,12 +1,11 @@
 package view;
 
 import javax.swing.*;
-
-import model.*;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+
+import model.*;
 
 
 public class WelcomeWindow extends JFrame{
@@ -62,12 +61,27 @@ public class WelcomeWindow extends JFrame{
             }
         });
 
-        loadGame.addActionListener( new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent e){
-                //CARREGAR ARQUIVO DE JOGO PASSADO
+        loadGame.addActionListener( e -> {
+            // 1. Cria uma instância da sua classe de persistência
+            GamePersistence persistence = new GamePersistence();
+            
+            // 2. Chama o método para carregar o jogo. 
+            // Este método irá abrir a janela de seleção de arquivo para o usuário.
+            GameState loadedState = persistence.loadGame("pokemon_save.sav"); // Usa um nome de arquivo padrão por enquanto
+
+            // 3. Verifica se o jogo foi carregado com sucesso
+            if (loadedState != null) {
+                // 4. Se sim, inicia a janela principal do jogo com os dados carregados
+                new MainGameWindow(loadedState);
+                
+                // 5. Fecha a janela de boas-vindas
+                WelcomeWindow.this.dispose();
+            } else {
+                // Opcional: Mostra uma mensagem de erro se o carregamento falhar
+                JOptionPane.showMessageDialog(WelcomeWindow.this, "Falha ao carregar o jogo.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         });
+
 
         randomGame.addActionListener( new ActionListener(){
             @Override

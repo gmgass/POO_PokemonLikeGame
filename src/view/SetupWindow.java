@@ -172,7 +172,9 @@ public class SetupWindow extends JFrame {
         //configura listener para botoes start e debug
 
         startGameButton.addActionListener(e -> {
-            new MainGameWindow(this.board);
+            model.GameState state = new GameState(new Trainer("usgurizes", false), new Trainer("Equipe Rocket", true), this.board);
+            
+            new MainGameWindow(state);
             this.dispose();
         });
 
