@@ -1,4 +1,4 @@
-package model;
+package model.pokemon;
 
 import java.util.Random;
 
@@ -20,6 +20,11 @@ public class PokemonGrass extends Pokemon {
             case WATER -> 1.5;
             default -> 1.0;
         };
+    }
+
+    @Override
+    public String toString() {
+        return this.name + " Tipo: Grama";
     }
 
     // -----------------------------------------------------------------------------------------

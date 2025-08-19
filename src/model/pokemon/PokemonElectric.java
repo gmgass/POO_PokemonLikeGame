@@ -1,4 +1,4 @@
-package model;
+package model.pokemon;
 
 import java.util.Random;
 
@@ -18,6 +18,11 @@ public class PokemonElectric extends Pokemon {
             case WATER -> 2.0;
             default -> 1.0; // ELECTRIC, WATER.
         };
+    }
+
+    @Override
+    public String toString() {
+        return this.name + " Tipo: Elétrico";
     }
 
     // -----------------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-package model;
+package model.pokemon;
 
 public class PokemonWater extends Pokemon {
 
@@ -18,6 +18,11 @@ public class PokemonWater extends Pokemon {
             case WATER -> 1.0;
             default -> 1.0;
         };
+    }
+
+    @Override
+    public String toString() {
+        return this.name + " Tipo: Água";
     }
 
     // LEMBRANDO QUE A VANTAGEM DO POKEMON DE ÁGUA É EM RELAÇÃO AO TERRENO. DEVE SER MODIFICADO DEPOIS.

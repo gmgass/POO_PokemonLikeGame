@@ -1,4 +1,4 @@
-package model;
+package model.pokemon;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -36,7 +36,6 @@ public abstract class Pokemon implements Serializable {
         this.isWild = true;
         this.isParalyzed = false;
     }
-
 
 //  ================================================================================================
 //  --- MÉTODOS ---
@@ -85,6 +84,10 @@ public abstract class Pokemon implements Serializable {
         }
     }
 
+    public void restoreHealth() {
+        this.health = this.maxHealth;
+    }
+    
     //  --- NÍVEL E EXPERIÊNCIA ----------------------------------------------------------------
     public void increaseExpPoints ( int expPoints ) {
         this.exp += expPoints;

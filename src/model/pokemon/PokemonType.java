@@ -1,4 +1,4 @@
-package model;
+package model.pokemon;
 
 /**
  * Define os tipos de Pokémons existentes no jogo.
