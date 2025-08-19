@@ -3,18 +3,17 @@ package view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import model.*;
-import model.game.BoardCell;
-import model.game.GameBoard;
-import model.game.GameState;
-import model.game.Trainer;
+
+import model.game.*;
 import model.pokemon.Pokemon;
+
 import controller.*;
 // import controller.GameController; // Descomente quando a classe for criada
 
-public class MainGameWindow extends JFrame {
+public class MainGameWindow extends JFrame implements Observer{
 
     //atributos de dados
     private final GameBoard board;
@@ -34,21 +33,25 @@ public class MainGameWindow extends JFrame {
 
     //construtor
     public MainGameWindow(GameState gameState) {
+        
+        //inicializa atributos
         this.board = gameState.getBoard();  
         this.player = gameState.getPlayer();
         this.computer = gameState.getComputer();
         this.gameController = new GameController(gameState, this); // cria o controlador do jogo
+        gameState.addObserver(this);
 
+        //monta a janela
         setTitle("Pokémon - Campo de Batalha");
         setSize(800, 600); // Padronizado com as outras janelas
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
-        // Adiciona uma margem interna à janela
+        // adiciona uma margem interna à janela
         ((JPanel) getContentPane()).setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // Cria e adiciona os painéis principais
+        // cria e adiciona os painéis principais
         JPanel infoPanel = createInfoPanel();
         JPanel boardPanel = createBoardPanel();
         JPanel actionsPanel = createActionsPanel();
@@ -82,11 +85,96 @@ public class MainGameWindow extends JFrame {
         }
     }
 
-    public void updateScores(int playerScore, int computerScore) {
-        playerScoreLabel.setText("Pontuação: " + playerScore);
-        computerScoreLabel.setText("Pontuação: " + computerScore);
+        //método da interface observador
+    @Override
+    public void update(GameState gameState) {
+        // verifica se o jogo acabou antes de qualquer outra atualização
+        if (gameState.isGameOver()) {
+            checkEndGame(gameState);
+            return;
+        }
+
+        // atualiza todos os componentes da ui com base no novo estado do jogo
+        updateBoard(gameState);
+        updateScoreLabels(gameState);
+        updateHintButton(gameState);
+        updateTurnIndicator(gameState); // idealmente, você teria um label para isso
     }
+
+
     //métodos privados
+
+    /**
+     * atualiza os labels de pontuação do jogador e do computador.
+     */
+    private void updateScoreLabels(GameState gameState) {
+        playerScoreLabel.setText("Pontuação: " + gameState.getPlayer().getScore());
+        computerScoreLabel.setText("Pontuação: " + gameState.getComputer().getScore());
+    }
+
+    /**
+     * percorre todo o tabuleiro e atualiza o estado de cada botão (célula).
+     */
+    private void updateBoard(GameState gameState) {
+        for (int row = 0; row < board.getSize(); row++) {
+            for (int col = 0; col < board.getSize(); col++) {
+                BoardCell cell = gameState.getBoard().getCellAt(row, col);
+                JButton button = cellButtons[row][col];
+
+                if (cell.isRevealed()) {
+                    button.setEnabled(false);
+                    Pokemon pokemon = cell.getPokemon();
+                    if (pokemon != null) {
+                        button.setText(pokemon.getName());
+                        // futuramente, você pode adicionar um ícone aqui
+                    } else {
+                        button.setText("-"); // marca como vazio
+                    }
+                } else {
+                    // garante que células não reveladas estejam no estado padrão
+                    button.setEnabled(true);
+                    button.setText("?");
+                }
+            }
+        }
+    }
+
+    /**
+     * atualiza o texto e o estado do botão de dica.
+     */
+    private void updateHintButton(GameState gameState) {
+        int hints = gameState.getHintsRemaining();
+        hintButton.setText("Dica (" + hints + ")");
+        hintButton.setEnabled(hints > 0); // desabilita o botão se as dicas acabarem
+    }
+
+    /**
+     * informa ao usuário de quem é o turno.
+     * (requer um jlabel statuslabel no seu ui).
+     */
+    private void updateTurnIndicator(GameState gameState) {
+        if (gameState.isPlayerTurn()) {
+            // idealmente, um label de status mudaria de texto.
+            // por enquanto, vamos usar o título da janela.
+            setTitle("Pokémon - Campo de Batalha (Seu Turno)");
+        } else {
+            setTitle("Pokémon - Campo de Batalha (Turno do Computador)");
+        }
+    }
+
+    /**
+     * chamado quando a condição de fim de jogo é atingida.
+     * abre a janela de fim de jogo e fecha a atual.
+     */
+    private void checkEndGame(GameState gameState) {
+        // para evitar que a janela seja aberta múltiplas vezes
+        this.dispose(); // fecha a janela do jogo principal
+        
+        // cria e exibe a janela de fim de jogo
+        // você precisará criar o construtor de endgamewindow para receber o gamestate
+        //new EndGameWindow(gameState); 
+    }
+    
 
         //metodos auxiliares do construtor
     private JPanel createInfoPanel() {
@@ -103,7 +191,7 @@ public class MainGameWindow extends JFrame {
         // Painel do Computador
         JPanel computerPanel = new JPanel(new GridLayout(2, 1));
         computerNameLabel = new JLabel("Adversário: " + computer.getName());
-        computerScoreLabel = new JLabel("Pontuação:" + computer.getName());
+        computerScoreLabel = new JLabel("Pontuação:" + computer.getScore());
         computerPanel.add(computerNameLabel);
         computerPanel.add(computerScoreLabel);
 

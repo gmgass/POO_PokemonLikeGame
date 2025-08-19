@@ -1,11 +1,15 @@
 // Local: src/controller/GameController.java
 package controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.awt.Point;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import model.game.BoardCell;
+import model.game.GameBoard;
 import model.game.GameState;
 import model.pokemon.Pokemon;
 import view.MainGameWindow;
@@ -15,7 +19,6 @@ public class GameController {
     //atributos
     private GameState gameState;
     private MainGameWindow view;
-    private boolean isPlayerTurn = true; // O jogador humano sempre começa
 
     //construtor
     public GameController(GameState gameState, MainGameWindow view) {
@@ -27,56 +30,93 @@ public class GameController {
 
     //métodos públicos (chamados pela View)
 
-    /**
-     * Lida com o clique do jogador numa célula do tabuleiro.
-     * Este é o principal ponto de entrada para a lógica de uma jogada.
-     */
+
     public void handleCellClick(int row, int col) {
-        if (!isPlayerTurn) {
-            // Se não for o turno do jogador, ignora o clique
-            return;
+        if (!gameState.isPlayerTurn()) {
+            return; // ignora o clique se não for o turno do jogador
         }
 
         BoardCell cell = gameState.getBoard().getCellAt(row, col);
         if (cell.isRevealed()) {
-            return; // Ignora cliques em células já reveladas
+            return; // ignora cliques em células já reveladas
         }
 
         cell.setRevealed(true);
         Pokemon foundPokemon = cell.getPokemon();
-        
-        // Atualiza a interface gráfica para mostrar o que foi encontrado
-        view.updateCell(row, col, foundPokemon);
 
+        // lógica principal
         if (foundPokemon != null) {
             if (foundPokemon.isWild()) {
-                handleWildPokemonEncounter(foundPokemon);
+                handleWildPokemonEncounter(foundPokemon, row, col);
             } else {
                 handleTrainerBattle(foundPokemon);
             }
         } else {
-            // A célula estava vazia, passa o turno
+            // a célula estava vazia, passa o turno
             endPlayerTurn();
         }
+        
+        // notifica a view para se redesenhar com o novo estado
+        gameState.notifyObservers();
     }
     
     //métodos privados
 
-    private void handleWildPokemonEncounter(Pokemon wildPokemon) {
+    private void handleWildPokemonEncounter(Pokemon wildPokemon, int row, int col) {
         // Lógica de captura conforme o PDF
-        int choice = JOptionPane.showConfirmDialog(view, 
+        int choice = JOptionPane.showConfirmDialog(null, 
             "Você encontrou um " + wildPokemon.getName() + " selvagem! Deseja tentar capturá-lo?", 
             "Pokémon Selvagem", 
             JOptionPane.YES_NO_OPTION);
 
         if (choice == JOptionPane.YES_OPTION) {
             boolean captured = gameState.getPlayer().capturePokemon(wildPokemon);
-            if (captured) {
-                // TODO: Atualizar pontuação na view
-                // view.updateScores(...)
+            if (!captured) {
+                // nova lógica de fuga!
+                handlePokemonEscape(wildPokemon, row, col);
             }
         }
         endPlayerTurn();
+    }
+
+    /**
+     * move um pokémon para uma célula adjacente vazia e válida.
+     */
+    private void handlePokemonEscape(Pokemon pokemon, int fromRow, int fromCol) {
+        GameBoard board = gameState.getBoard();
+        List<Point> possibleMoves = new ArrayList<>();
+
+        // verifica as 8 posições adjacentes
+        for (int r = -1; r <= 1; r++) {
+            for (int c = -1; c <= 1; c++) {
+                if (r == 0 && c == 0) continue; // ignora a posição atual
+
+                int newRow = fromRow + r;
+                int newCol = fromCol + c;
+
+                // checa se a nova posição é válida
+                if (newRow >= 0 && newRow < board.getSize() && newCol >= 0 && newCol < board.getSize()) {
+                    BoardCell newCell = board.getCellAt(newRow, newCol);
+                    // checa se a célula está vazia e se a região é compatível
+                    if (newCell.getPokemon() == null && newCell.getRegion() == pokemon.getType()) {
+                        possibleMoves.add(new Point(newRow, newCol));
+                    }
+                }
+            }
+        }
+
+        if (!possibleMoves.isEmpty()) {
+            // escolhe uma nova posição aleatória
+            Point newPosition = possibleMoves.get(new Random().nextInt(possibleMoves.size()));
+            
+            // move o pokémon
+            board.getCellAt(newPosition.x, newPosition.y).setPokemon(pokemon);
+            board.getCellAt(fromRow, fromCol).setPokemon(null);
+
+            JOptionPane.showMessageDialog(null, pokemon.getName() + " escapou para outra área!");
+        } else {
+            JOptionPane.showMessageDialog(null, pokemon.getName() + " tentou escapar, mas não tinha para onde ir!");
+        }
     }
 
     private void handleTrainerBattle(Pokemon opponentPokemon) {
@@ -95,13 +135,11 @@ public class GameController {
      * Finaliza o turno do jogador e inicia o turno do computador numa nova thread.
      */
     private void endPlayerTurn() {
-        this.isPlayerTurn = false;
-        // TODO: Atualizar a view para indicar que é o turno do computador
-        
-        // Inicia a jogada do computador em uma thread separada para não travar a UI
-        new Thread(() -> {
-            executeComputerTurn();
-        }).start();
+        gameState.setPlayerTurn(false);
+        gameState.notifyObservers(); // notifica a ui que o turno mudou
+
+        // inicia a jogada do computador em uma nova thread para não travar a ui
+        new Thread(this::executeComputerTurn).start();
     }
 
     /**
@@ -141,12 +179,12 @@ public class GameController {
     private void handleComputerCellClick(int row, int col) {
         BoardCell cell = gameState.getBoard().getCellAt(row, col);
         cell.setRevealed(true);
-        Pokemon foundPokemon = cell.getPokemon();
-        view.updateCell(row, col, foundPokemon);
 
         // TODO: Implementar a lógica de batalha/captura para o computador
         
-        // Devolve o turno para o jogador
-        this.isPlayerTurn = true;
+        // devolve o turno para o jogador
+        gameState.setPlayerTurn(true);
+        gameState.notifyObservers(); // notifica a ui que o turno mudou de volta
     }
+
 }
