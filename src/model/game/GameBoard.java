@@ -2,6 +2,8 @@ package model.game;
 
 import exception.InvalidPositionException;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 import model.pokemon.Pokemon;
 import model.pokemon.PokemonType;
 
@@ -23,8 +25,8 @@ public class GameBoard implements Serializable {
 
     //metodos publicos
 
-    public void distribuirPokemonsAleatoriamente(java.util.List<Pokemon> wildPokemons) {
-        java.util.Collections.shuffle(wildPokemons); // Embaralha a lista
+    public void distribuirPokemonsAleatoriamente(List<Pokemon> wildPokemons) {
+        Collections.shuffle(wildPokemons); // Embaralha a lista
 
         for (Pokemon p : wildPokemons) {
             boolean posicionado = false;
@@ -58,7 +60,7 @@ public class GameBoard implements Serializable {
     public int getSize()  { return this.size; }
     
     public BoardCell getCellAt(int row, int col) {
-        if(row > size - 1 || col > size - 1){
+        if(row >= size || col >= size || row < 0 || col < 0){
             throw new IllegalArgumentException("Posição do grid inválida.");
         }
         return this.grid[row][col]; 

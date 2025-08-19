@@ -5,7 +5,6 @@ import java.util.List;
 import javax.swing.*;
 
 import exception.InvalidPositionException;
-import model.*;
 import model.game.BoardCell;
 import model.game.GameBoard;
 import model.game.GameState;

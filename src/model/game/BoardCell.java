@@ -1,7 +1,6 @@
 package model.game;
 
 import java.io.Serializable;
-
 import model.pokemon.Pokemon;
 import model.pokemon.PokemonType;
 
@@ -16,23 +15,12 @@ public class BoardCell implements Serializable{
         this.isRevealed = false;
     }
 
-    public PokemonType getRegion() {
-        return region;
-    }
+    // ----- Getters -----
+    public PokemonType getRegion() { return region; }
+    public Pokemon getPokemon() { return pokemon; }
+    public boolean isRevealed() { return isRevealed; }
 
-    public Pokemon getPokemon() {
-        return pokemon;
-    }
-    
-    public boolean isRevealed() {
-        return isRevealed;
-    }
-
-    public void setPokemon(Pokemon pokemon) {
-        this.pokemon = pokemon;
-    }
-
-    public void setRevealed(boolean isRevealed) {
-        this.isRevealed = isRevealed;
-    }
+    // ----- Setters -----   
+    public void setPokemon(Pokemon pokemon) { this.pokemon = pokemon; }
+    public void setRevealed(boolean isRevealed) { this.isRevealed = isRevealed; }
 }

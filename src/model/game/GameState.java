@@ -1,9 +1,9 @@
 package model.game;
 
+import controller.Observer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import controller.Observer;
 import model.pokemon.Pokemon;
 
 
@@ -51,50 +51,6 @@ public class GameState implements Serializable {
         }
     }
 
-    // setters
-    public void setPlayerTurn(boolean isPlayerTurn) {
-        this.isPlayerTurn = isPlayerTurn;
-    }
-
-    public void decrementPlayerHints() {
-        if (hintsRemaining > 0) {
-            this.hintsRemaining--;
-        }
-    }
-    
-    public void setBoard(GameBoard board) {
-        this.board = board;
-    }
-
-    public void setPlayer(Trainer player) {
-        this.player = player;
-    }
-
-    public void setComputer(Trainer computer) {
-        this.computer = computer;
-    }
-
-    // getters
-    public Trainer getPlayer() {
-        return player;
-    }
-
-    public Trainer getComputer() {
-        return computer;
-    }
-
-    public GameBoard getBoard() {
-        return board;
-    }
-
-    public boolean isPlayerTurn() {
-        return isPlayerTurn;
-    }
-
-    public int getHintsRemaining() {
-        return hintsRemaining;
-    }
-
     // método para verificar o fim do jogo
     public boolean isGameOver() {
         // o jogo termina quando não há mais pokémons selvagens no tabuleiro
@@ -107,5 +63,24 @@ public class GameState implements Serializable {
             }
         }
         return true; // se o loop terminar, não há mais selvagens
+    }
+
+    // ----- Getters -----
+    public Trainer getPlayer() {  return player; }
+    public Trainer getComputer() { return computer; }
+    public GameBoard getBoard() { return board; }
+    public boolean isPlayerTurn() { return isPlayerTurn; }
+    public int getHintsRemaining() { return hintsRemaining; }
+
+    // ----- Setters -----
+    public void setPlayerTurn(boolean isPlayerTurn) { this.isPlayerTurn = isPlayerTurn; }
+    public void setBoard(GameBoard board) { this.board = board; }
+    public void setPlayer(Trainer player) { this.player = player; }
+    public void setComputer(Trainer computer) { this.computer = computer; }
+
+    public void decrementPlayerHints() {
+        if (hintsRemaining > 0) {
+            this.hintsRemaining--;
+        }
     }
 }

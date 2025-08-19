@@ -11,58 +11,39 @@ import model.game.GameState;
 import model.game.Trainer;
 import model.pokemon.*;
 
-/**
- * A primeira janela do jogo, que oferece ao jogador as opções iniciais para
- * começar uma nova partida.
- */
 public class WelcomeWindow extends JFrame {
 
-    // --- Atributos da Classe para os componentes da UI ---
     private JButton debugModeButton;
     private JButton loadGameButton;
     private JButton newGameButton;
 
     public WelcomeWindow() {
-        // --- 1. Configuração da Janela Principal ---
         super("Bem-vindo ao Pokémon!");
         setSize(500, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Centraliza na tela
+        setLocationRelativeTo(null); 
         setLayout(new BorderLayout(10, 10));
 
-        // --- 2. Criação e Configuração dos Componentes ---
         setupUI();
-
-        // --- 3. Configuração dos Listeners de Eventos ---
         setupListeners();
-
-        // --- 4. Torna a janela visível ---
         setVisible(true);
     }
 
-    /**
-     * Inicializa e organiza os componentes da interface gráfica.
-     */
     private void setupUI() {
         JPanel mainPanel = new JPanel(new BorderLayout());
-        // Adiciona uma margem interna à janela
         ((JPanel) getContentPane()).setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 10));
 
-        // Título
         JLabel welcomeLabel = new JLabel("Welcome to our Pokemon-like game!\n", JLabel.CENTER);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
         mainPanel.add(welcomeLabel, BorderLayout.NORTH);
 
-        // Painel para os botões, com BoxLayout para empilhá-los verticalmente
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 
-        // Instancia os botões usando os atributos da classe
         newGameButton = new JButton("New Game");
         loadGameButton = new JButton("Load Game");
         debugModeButton = new JButton("Debug mode");
 
-        // Define o tamanho preferencial e alinhamento para os botões
         Dimension buttonSize = new Dimension(250, 35);
         Component[] buttons = { newGameButton, loadGameButton, debugModeButton };
         for (Component btn : buttons) {
@@ -72,24 +53,19 @@ public class WelcomeWindow extends JFrame {
             ((JButton) btn).setFont(new Font("Arial", Font.PLAIN, 16));
         }
 
-        // Adiciona os botões ao painel com espaçamento entre eles
-        buttonPanel.add(Box.createVerticalGlue()); // Espaço flexível acima para centralizar
+        buttonPanel.add(Box.createVerticalGlue()); 
         buttonPanel.add(newGameButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(0, 8))); // Espaçamento fixo
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 8))); 
         buttonPanel.add(loadGameButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 8)));
         buttonPanel.add(debugModeButton);
-        buttonPanel.add(Box.createVerticalGlue()); // Espaço flexível abaixo para centralizar
+        buttonPanel.add(Box.createVerticalGlue()); 
 
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
         this.add(mainPanel);
     }
 
-    /**
-     * Configura as ações que serão executadas quando os botões forem clicados.
-     */
     private void setupListeners() {
-        // Ação para o botão "Posicionar Time" que chama a SetupWindow
         debugModeButton.addActionListener(e -> {
             GameBoard board = new GameBoard(8);
             Trainer player = new Trainer("Jogador", false);
@@ -109,9 +85,8 @@ public class WelcomeWindow extends JFrame {
             this.dispose();
         });
 
-        // Ação para o botão "Carregar Jogo" com JFileChooser
         loadGameButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser("."); // Começa no diretório do projeto
+            JFileChooser fileChooser = new JFileChooser("."); 
             fileChooser.setDialogTitle("Selecione o jogo salvo para carregar");
             fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Save files (*.sav)", "sav"));
 
@@ -128,7 +103,6 @@ public class WelcomeWindow extends JFrame {
             }
         });
 
-        // Ação para o botão "Distribuir Aleatoriamente"
         newGameButton.addActionListener(e -> {
             GameBoard board = new GameBoard(8);
             Trainer player = new Trainer("Jogador", false);
@@ -143,7 +117,6 @@ public class WelcomeWindow extends JFrame {
                 computer.addInitialPokemon(list.remove(rand.nextInt(list.size())));
             }
 
-            // O método distribuirPokemonsAleatoriamente precisa ser adicionado ao seu GameBoard
             board.distribuirPokemonsAleatoriamente(list); 
 
             GameState gameState = new GameState(player, computer, board);
@@ -152,10 +125,6 @@ public class WelcomeWindow extends JFrame {
         });
     }
 
-    /**
-     * Cria e retorna uma lista completa de Pokémons para o início do jogo.
-     * @return Uma ArrayList contendo os Pokémons.
-     */
     private ArrayList<Pokemon> createCompletePokemonList() {
         ArrayList<Pokemon> list = new ArrayList<>();
         list.add(new PokemonGround("Steelix", 100, 10));

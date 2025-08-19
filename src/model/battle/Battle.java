@@ -13,7 +13,7 @@ public class Battle {
     private final Pokemon playerPokemon;
     private final Pokemon opponentPokemon;
     private Pokemon attacker;
-    private int turnCounter; // contador de turnos global para a batalha
+    private int turnCounter; // contador de turnos global para a batalha (para remover da classe PokemonGround)
 
     /**
      * construtor da batalha.

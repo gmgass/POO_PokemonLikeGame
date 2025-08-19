@@ -22,16 +22,8 @@ public class BattleResult {
     }
 
     // getters
-    public Pokemon getWinner() {
-        return winner;
-    }
-
-    public Pokemon getLoser() {
-        return loser;
-    }
-
-    public boolean wasFlee() {
-        return wasFlee;
-    }
+    public Pokemon getWinner() { return winner; }
+    public Pokemon getLoser() { return loser; }
+    public boolean wasFlee() { return wasFlee; }
     
 }
