@@ -1,27 +1,21 @@
 package view;
 
+import controller.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import model.game.*;
 import model.pokemon.Pokemon;
 
-import controller.*;
-// import controller.GameController; // Descomente quando a classe for criada
+public class MainGameWindow extends JFrame implements Observer {
 
-public class MainGameWindow extends JFrame implements Observer{
-
-    //atributos de dados
+    // Atributos de dados
     private final GameBoard board;
     private final GameController gameController;
-    private final Trainer player; // Adicionado
-    private final Trainer computer; // O cérebro do jogo
+    private final Trainer player;
+    private final Trainer computer;
 
-    //atributos de interface
+    // Atributos de interface
     private JButton[][] cellButtons;
     private JLabel playerScoreLabel;
     private JLabel playerNameLabel;
@@ -31,107 +25,68 @@ public class MainGameWindow extends JFrame implements Observer{
     private JButton hintButton;
     private JButton exitButton;
 
-    //construtor
+    // Construtor
     public MainGameWindow(GameState gameState) {
-        
-        //inicializa atributos
-        this.board = gameState.getBoard();  
+        this.board = gameState.getBoard();
         this.player = gameState.getPlayer();
         this.computer = gameState.getComputer();
-        this.gameController = new GameController(gameState, this); // cria o controlador do jogo
+        this.gameController = new GameController(gameState, this);
         gameState.addObserver(this);
 
-        //monta a janela
-        setTitle("Pokémon - Campo de Batalha");
-        setSize(800, 600); // Padronizado com as outras janelas
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout(10, 10));
-
-        // adiciona uma margem interna à janela
-        ((JPanel) getContentPane()).setBorder(new EmptyBorder(10, 10, 10, 10));
-
-        // cria e adiciona os painéis principais
-        JPanel infoPanel = createInfoPanel();
-        JPanel boardPanel = createBoardPanel();
-        JPanel actionsPanel = createActionsPanel();
-
-        this.add(infoPanel, BorderLayout.NORTH);
-        this.add(boardPanel, BorderLayout.CENTER);
-        this.add(actionsPanel, BorderLayout.SOUTH);
-
+        setupWindow();
+        setupPanels();
         setupEventListeners();
 
+        update(gameState); // Chama update para setar o estado inicial
         setVisible(true);
     }
 
-    //metodos publicos
+    // --- Métodos de Configuração da UI ---
 
-        //metedos para atualização de ui
-    public void updateCell(int row, int col, Pokemon pokemon) {
-        // Acessa o botão correto na nossa matriz de botões da UI
-        JButton button = cellButtons[row][col];
-        
-        // Desabilita o botão para que não possa ser clicado novamente
-        button.setEnabled(false);
-
-        // Verifica se um Pokémon foi encontrado para decidir qual texto mostrar
-        if (pokemon != null) {
-            button.setText(pokemon.getName());
-            // No futuro, você pode querer mostrar um ícone em vez de texto:
-            // button.setIcon(...)
-        } else {
-            button.setText("-"); // Marca a célula como vazia
-        }
+    private void setupWindow() {
+        setTitle("Pokémon - Campo de Batalha");
+        setSize(800, 700);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout(10, 10));
+        ((JPanel) getContentPane()).setBorder(new EmptyBorder(10, 10, 10, 10));
     }
 
-        //método da interface observador
+    private void setupPanels() {
+        add(createInfoPanel(), BorderLayout.NORTH);
+        add(createBoardPanel(), BorderLayout.CENTER);
+        add(createActionsPanel(), BorderLayout.SOUTH);
+    }
+
+    // --- Métodos de Atualização da UI (Observer) ---
+
     @Override
     public void update(GameState gameState) {
-        // verifica se o jogo acabou antes de qualquer outra atualização
         if (gameState.isGameOver()) {
             checkEndGame(gameState);
             return;
         }
-
-        // atualiza todos os componentes da ui com base no novo estado do jogo
         updateBoard(gameState);
         updateScoreLabels(gameState);
         updateHintButton(gameState);
-        updateTurnIndicator(gameState); // idealmente, você teria um label para isso
+        updateTurnIndicator(gameState);
     }
 
-
-    //métodos privados
-
-    /**
-     * atualiza os labels de pontuação do jogador e do computador.
-     */
     private void updateScoreLabels(GameState gameState) {
         playerScoreLabel.setText("Pontuação: " + gameState.getPlayer().getScore());
         computerScoreLabel.setText("Pontuação: " + gameState.getComputer().getScore());
     }
 
-    /**
-     * percorre todo o tabuleiro e atualiza o estado de cada botão (célula).
-     */
     private void updateBoard(GameState gameState) {
         for (int row = 0; row < board.getSize(); row++) {
             for (int col = 0; col < board.getSize(); col++) {
                 BoardCell cell = gameState.getBoard().getCellAt(row, col);
                 JButton button = cellButtons[row][col];
-
                 if (cell.isRevealed()) {
                     button.setEnabled(false);
                     Pokemon pokemon = cell.getPokemon();
-                    if (pokemon != null) {
-                        button.setText(pokemon.getName());
-                        // futuramente, você pode adicionar um ícone aqui
-                    } else {
-                        button.setText("-"); // marca como vazio
-                    }
+                    button.setText(pokemon != null ? pokemon.getName() : "-");
                 } else {
-                    // garante que células não reveladas estejam no estado padrão
                     button.setEnabled(true);
                     button.setText("?");
                 }
@@ -139,59 +94,41 @@ public class MainGameWindow extends JFrame implements Observer{
         }
     }
 
-    /**
-     * atualiza o texto e o estado do botão de dica.
-     */
     private void updateHintButton(GameState gameState) {
         int hints = gameState.getHintsRemaining();
         hintButton.setText("Dica (" + hints + ")");
-        hintButton.setEnabled(hints > 0); // desabilita o botão se as dicas acabarem
+        hintButton.setEnabled(hints > 0 && gameState.isPlayerTurn());
     }
 
-    /**
-     * informa ao usuário de quem é o turno.
-     * (requer um jlabel statuslabel no seu ui).
-     */
     private void updateTurnIndicator(GameState gameState) {
+        swapPokemonButton.setEnabled(gameState.isPlayerTurn());
         if (gameState.isPlayerTurn()) {
-            // idealmente, um label de status mudaria de texto.
-            // por enquanto, vamos usar o título da janela.
             setTitle("Pokémon - Campo de Batalha (Seu Turno)");
         } else {
             setTitle("Pokémon - Campo de Batalha (Turno do Computador)");
         }
     }
 
-    /**
-     * chamado quando a condição de fim de jogo é atingida.
-     * abre a janela de fim de jogo e fecha a atual.
-     */
     private void checkEndGame(GameState gameState) {
-        // para evitar que a janela seja aberta múltiplas vezes
-        this.dispose(); // fecha a janela do jogo principal
-        
-        // cria e exibe a janela de fim de jogo
-        // você precisará criar o construtor de endgamewindow para receber o gamestate
-        //new EndGameWindow(gameState); 
+        this.dispose();
+        // new EndGameWindow(gameState); // Descomente quando a EndGameWindow estiver pronta
     }
-    
 
-        //metodos auxiliares do construtor
+    // --- Métodos de Criação de Componentes ---
+
     private JPanel createInfoPanel() {
         JPanel panel = new JPanel(new GridLayout(1, 2, 10, 0));
         panel.setBorder(BorderFactory.createTitledBorder("Status dos Treinadores"));
 
-        // Painel do Jogador
         JPanel playerPanel = new JPanel(new GridLayout(2, 1));
         playerNameLabel = new JLabel("Jogador: " + player.getName());
         playerScoreLabel = new JLabel("Pontuação: " + player.getScore());
         playerPanel.add(playerNameLabel);
         playerPanel.add(playerScoreLabel);
 
-        // Painel do Computador
         JPanel computerPanel = new JPanel(new GridLayout(2, 1));
         computerNameLabel = new JLabel("Adversário: " + computer.getName());
-        computerScoreLabel = new JLabel("Pontuação:" + computer.getScore());
+        computerScoreLabel = new JLabel("Pontuação: " + computer.getScore());
         computerPanel.add(computerNameLabel);
         computerPanel.add(computerScoreLabel);
 
@@ -202,31 +139,21 @@ public class MainGameWindow extends JFrame implements Observer{
 
     private JPanel createBoardPanel() {
         int boardSize = board.getSize();
-        
-        JPanel boardPanel = new JPanel();
-        boardPanel.setLayout(new GridLayout(boardSize, boardSize));
-        
-        JButton buttons[][] = new JButton[boardSize][boardSize];
-        this.cellButtons = buttons;
-
+        JPanel boardPanel = new JPanel(new GridLayout(boardSize, boardSize));
+        cellButtons = new JButton[boardSize][boardSize];
         for (int row = 0; row < boardSize; row++) {
             for (int col = 0; col < boardSize; col++) {
-                JButton button = new JButton("?"); // Começa "não revelado"
+                JButton button = new JButton("?");
                 BoardCell cell = board.getCellAt(row, col);
-
-                if(cell.getRegion() == model.pokemon.PokemonType.ELECTRIC){
-                    button.setBackground(new Color(209, 185, 14));
-                }else if(cell.getRegion() == model.pokemon.PokemonType.GRASS){
-                    button.setBackground(new Color(48, 185, 14));
-                }else if(cell.getRegion() == model.pokemon.PokemonType.GROUND){
-                    button.setBackground(new Color(103, 50, 9));
-                }else if(cell.getRegion() == model.pokemon.PokemonType.WATER){
-                    button.setBackground(new Color(25, 198, 210));
-                }
-                
+                // Define a cor da região
+                button.setBackground(switch(cell.getRegion()) {
+                    case ELECTRIC -> new Color(209, 185, 14);
+                    case GRASS -> new Color(48, 185, 14);
+                    case GROUND -> new Color(103, 50, 9);
+                    case WATER -> new Color(25, 198, 210);
+                });
                 button.setOpaque(true);
-                
-                this.cellButtons[row][col] = button;
+                cellButtons[row][col] = button;
                 boardPanel.add(button);
             }
         }
@@ -235,43 +162,35 @@ public class MainGameWindow extends JFrame implements Observer{
 
     private JPanel createActionsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        
-        // Usei um painel extra para os botões do meio para melhor alinhamento
         JPanel centerButtonsPanel = new JPanel();
-        swapPokemonButton = new JButton("Trocar Pokémon Principal");
+        swapPokemonButton = new JButton("Trocar Pokémon");
         hintButton = new JButton("Dica (3)");
-        
         centerButtonsPanel.add(swapPokemonButton);
         centerButtonsPanel.add(hintButton);
-
         exitButton = new JButton("Sair do Jogo");
-
         panel.add(centerButtonsPanel, BorderLayout.CENTER);
         panel.add(exitButton, BorderLayout.EAST);
-        
         return panel;
     }
 
+    // --- Configuração dos Listeners ---
+
     private void setupEventListeners() {
-        //configura listener para tabuleiro
         for (int row = 0; row < board.getSize(); row++) {
             for (int col = 0; col < board.getSize(); col++) {
                 final int finalRow = row;
                 final int finalCol = col;
-                
-                cellButtons[row][col].addActionListener(e -> {
-                    gameController.handleCellClick(finalRow, finalCol);
-                });
+                cellButtons[row][col].addActionListener(e -> gameController.handleCellClick(finalRow, finalCol));
             }
         }
 
-        //configura listener para botoes de ação
         exitButton.addActionListener(e -> {
-            // Lógica para sair do jogo
             this.dispose();
             new WelcomeWindow();
         });
-        
-        // TODO: Implementar listeners para hintButton e swapPokemonButton
+
+        swapPokemonButton.addActionListener(e -> gameController.handleSwapPokemon());
+
+        hintButton.addActionListener(e -> gameController.handleHintRequest());
     }
 }
