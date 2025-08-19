@@ -110,8 +110,7 @@ public class MainGameWindow extends JFrame implements Observer {
     }
 
     private void checkEndGame(GameState gameState) {
-        this.dispose();
-        // new EndGameWindow(gameState); // Descomente quando a EndGameWindow estiver pronta
+        new EndGameWindow(this, gameState); // Descomente quando a EndGameWindow estiver pronta
     }
 
     // --- Métodos de Criação de Componentes ---

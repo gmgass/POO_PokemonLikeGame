@@ -144,7 +144,7 @@ public class WelcomeWindow extends JFrame {
             }
 
             // O método distribuirPokemonsAleatoriamente precisa ser adicionado ao seu GameBoard
-            // board.distribuirPokemonsAleatoriamente(list); 
+            board.distribuirPokemonsAleatoriamente(list); 
 
             GameState gameState = new GameState(player, computer, board);
             new MainGameWindow(gameState);
