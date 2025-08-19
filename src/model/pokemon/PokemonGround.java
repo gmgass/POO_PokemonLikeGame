@@ -4,6 +4,8 @@ import java.util.Random;
 
 public class PokemonGround extends Pokemon {
 
+    private int turnCounter = 1;
+
     // ----- CONSTRUTOR -----
     public PokemonGround( String name, int maxHealth, int attack ) {
         super( name, PokemonType.GROUND, maxHealth, attack );
@@ -21,7 +23,7 @@ public class PokemonGround extends Pokemon {
 
     @Override
     public String toString() {
-        return this.name + " Tipo: Terra";
+        return this.name + " [Ground]";
     }
 
     // -----------------------------------------------------------------------------------------
@@ -30,10 +32,8 @@ public class PokemonGround extends Pokemon {
     // 20% de chance de causar 150% de dano em turno par.
     // -----------------------------------------------------------------------------------------
     @Override
-    public double getAbilityDamage( Pokemon target ) { return 1.0; }
-
-    public double getAbilityDamage( Pokemon target, int currTurn ) {
-        if ( currTurn % 2 != 0 ) {
+    public double getAbilityDamage( Pokemon target ) {
+        if ( turnCounter % 2 != 0 ) {
             return 2.0;
         } else {
             Random random = new Random();
@@ -41,11 +41,15 @@ public class PokemonGround extends Pokemon {
                 return 1.5;
             }
         }
+        this.turnCounter++;
         return 1.0;
     }
 
     @Override
     public void applyAbilityEffect( Pokemon target, int damage ) {}
+
+    // ----- Setter usado pela classe de Batalha -----
+    public void resetTurnCounter() { this.turnCounter = 1; }
 }
 
 

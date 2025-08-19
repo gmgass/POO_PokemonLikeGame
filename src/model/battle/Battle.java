@@ -2,6 +2,7 @@
 package model.battle;
 
 import model.pokemon.Pokemon;
+import model.pokemon.PokemonGround;
 
 /**
  * gerencia a lógica de uma batalha pokemon, round a round.
@@ -76,6 +77,10 @@ public class Battle {
         playerPokemon.restoreHealth();
         opponentPokemon.restoreHealth();
         
+        // ----- Reseta o contador dos pokemons tipo terra -----
+        if (playerPokemon instanceof PokemonGround) { ((PokemonGround) playerPokemon).resetTurnCounter(); }
+        if (opponentPokemon instanceof PokemonGround) { ((PokemonGround) opponentPokemon).resetTurnCounter(); }
+
         return new BattleResult(winner, loser);
     }
 
