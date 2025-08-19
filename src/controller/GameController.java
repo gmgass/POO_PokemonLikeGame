@@ -8,11 +8,12 @@ import java.awt.Point;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import model.game.BoardCell;
-import model.game.GameBoard;
-import model.game.GameState;
+import model.battle.*;
+import model.game.*;
 import model.pokemon.Pokemon;
 import view.MainGameWindow;
+import view.BattleWindow;
+
 
 public class GameController {
 
@@ -29,8 +30,6 @@ public class GameController {
     }
 
     //métodos públicos (chamados pela View)
-
-
     public void handleCellClick(int row, int col) {
         if (!gameState.isPlayerTurn()) {
             return; // ignora o clique se não for o turno do jogador
@@ -123,11 +122,26 @@ public class GameController {
         // Lógica de batalha conforme o PDF
         JOptionPane.showMessageDialog(view, "Batalha contra " + opponentPokemon.getName() + "!");
         
-        // TODO: Chamar a classe Battle para executar a batalha
-        // Battle battle = new Battle(gameState.getPlayer().getMainPokemon(), opponentPokemon);
-        // Pokemon winner = battle.startBattle();
-        // ... distribuir experiência ...
+        // 1. pega o pokemon principal do jogador
+        Pokemon playerPokemon = gameState.getPlayer().getMainPokemon(); // você precisará criar este método em trainer
+
+        // 2. cria a instância da batalha
+        Battle battle = new Battle(playerPokemon, opponentPokemon);
+
+        // 3. cria e exibe a janela de batalha (que vamos criar a seguir)
+        //BattleWindow battleView = new BattleWindow(battle);
         
+        // 4. a battlewindow será modal e, ao fechar, retornará o resultado
+        //BattleResult result = battleView.getResult();
+
+        // 5. processa o resultado
+        /*if (!result.wasFlee()) {
+            gameState.getPlayer().updateScore();
+            JOptionPane.showMessageDialog(null, result.getWinner().getName() + " venceu a batalha!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Você fugiu da batalha!");
+        }*/
+
         endPlayerTurn();
     }
 

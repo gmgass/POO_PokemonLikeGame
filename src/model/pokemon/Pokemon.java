@@ -37,7 +37,6 @@ public abstract class Pokemon implements Serializable {
         this.isParalyzed = false;
     }
 
-
 //  ================================================================================================
 //  --- MÉTODOS ---
 //  ================================================================================================
@@ -85,6 +84,10 @@ public abstract class Pokemon implements Serializable {
         }
     }
 
+    public void restoreHealth() {
+        this.health = this.maxHealth;
+    }
+    
     //  --- NÍVEL E EXPERIÊNCIA ----------------------------------------------------------------
     public void increaseExpPoints ( int expPoints ) {
         this.exp += expPoints;
