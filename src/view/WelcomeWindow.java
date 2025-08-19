@@ -3,7 +3,7 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.*;
 
 import model.*;
 
@@ -47,14 +47,43 @@ public class WelcomeWindow extends JFrame{
             public void actionPerformed(ActionEvent e){
                 //CHAMAR JANELA SETUPWINDOW
                 model.GameBoard board = new GameBoard(8);
-                ArrayList<model.Pokemon> list = new ArrayList<>();
+                model.Trainer player = new Trainer("Jogador", false);
+                model.Trainer computer = new Trainer("Computador", true);
                 
-                list.add(new PokemonGround("Steelix", 100, 10));
-                list.add(new PokemonElectric("Pikachu", 100, 10));
-                list.add(new PokemonWater("Squirtle", 100, 10));
-                list.add(new PokemonGrass("Bulbasaur", 100, 10));
+                ArrayList<Pokemon> list = createCompletePokemonList();
 
-                new SetupWindow(board, list);
+                Random rand = new Random();
+
+                //pega um Pokémon aleatório para o jogador
+                if (!list.isEmpty()) {
+                    
+                    int randomIndex = rand.nextInt(list.size()); // Gera um índice aleatório
+                    Pokemon playerPokemon = list.remove(randomIndex); // Pega e REMOVE o Pokémon da lista
+                    
+                    player.addInitialPokemon(playerPokemon);
+                    
+                    System.out.println("O jogador recebeu: " + playerPokemon.getName());
+                }
+
+                //pega um Pokémon aleatório da lista restante para o computador
+                if (!list.isEmpty()) {
+                    
+                    int randomIndex = rand.nextInt(list.size());
+                    Pokemon computerPokemon = list.remove(randomIndex);
+                    
+                    computer.addInitialPokemon(computerPokemon);
+                    
+                    System.out.println("O computador recebeu: " + computerPokemon.getName());
+                }
+        
+
+                // --- 4. Cria o GameState inicial ---
+                GameState gameState = new GameState(player, computer, board);
+
+                
+
+                // --- 5. Chama a SetupWindow, passando o GameState e a lista de selvagens ---
+                new SetupWindow(gameState, list);
 
                 WelcomeWindow.this.dispose();
 
@@ -89,5 +118,25 @@ public class WelcomeWindow extends JFrame{
                 //GERAR DISTRIBUIÇÃO ALEATORIA DE POKEMONS NO TABULEIRO
             }
         });
+    }
+
+
+    private ArrayList<Pokemon> createCompletePokemonList() {
+        ArrayList<model.Pokemon> list = new ArrayList<>();
+                    
+                    list.add(new PokemonGround("Steelix", 100, 10));
+                    list.add(new PokemonGround("Diglet", 100, 10));
+
+                    list.add(new PokemonGrass("Bulbasaur", 100, 10));
+                    list.add(new PokemonGrass("Oddish", 100, 10));
+
+                    list.add(new PokemonWater("Squirtle", 100, 10));
+                    list.add(new PokemonWater("Magikarp", 100, 10));
+                    
+                    list.add(new PokemonElectric("Pikachu", 100, 10));
+                    list.add(new PokemonElectric("Voltorb", 100, 10));
+        
+        // Adicione mais pokémons selvagens aqui...
+        return list;
     }
 }

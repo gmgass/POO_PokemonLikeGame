@@ -11,6 +11,7 @@ import model.*;
 public class SetupWindow extends JFrame {
     
     private final GameBoard board;
+    private final GameState gameState;
     private Pokemon selectedPokemon;
     private DefaultListModel<Pokemon> pokemonListModel;
 
@@ -22,8 +23,9 @@ public class SetupWindow extends JFrame {
     private JButton debugButton;
 
     //construtor
-    public SetupWindow(GameBoard board, List<Pokemon> pokemonCompleteList){
-        this.board = board;
+    public SetupWindow(GameState state, List<Pokemon> pokemonCompleteList){
+        this.board = state.getBoard();
+        this.gameState = state;
 
         setTitle("Modo de Preparação");
         setSize(800, 600);
@@ -172,9 +174,10 @@ public class SetupWindow extends JFrame {
         //configura listener para botoes start e debug
 
         startGameButton.addActionListener(e -> {
-            model.GameState state = new GameState(new Trainer("usgurizes", false), new Trainer("Equipe Rocket", true), this.board);
+            this.gameState.setBoard(board);
             
-            new MainGameWindow(state);
+
+            new MainGameWindow(this.gameState);
             this.dispose();
         });
 

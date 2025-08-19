@@ -20,6 +20,18 @@ public class GameState implements Serializable {
         this.board = board;
     }
 
+    public void setBoard(GameBoard board) {
+        this.board = board;
+    }
+
+    public void setPlayer(Trainer player) {
+        this.player = player;
+    }
+
+    public void setComputer(Trainer computer) {
+        this.computer = computer;
+    }
+
     // Getters pra recuperar os dados
     public Trainer getPlayer() {
         return player;
