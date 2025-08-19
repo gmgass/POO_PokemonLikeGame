@@ -6,6 +6,11 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import model.*;
+import model.game.BoardCell;
+import model.game.GameBoard;
+import model.game.GameState;
+import model.game.Trainer;
+import model.pokemon.Pokemon;
 import controller.*;
 // import controller.GameController; // Descomente quando a classe for criada
 
@@ -121,13 +126,13 @@ public class MainGameWindow extends JFrame {
                 JButton button = new JButton("?"); // Começa "não revelado"
                 BoardCell cell = board.getCellAt(row, col);
 
-                if(cell.getRegion() == model.PokemonType.ELECTRIC){
+                if(cell.getRegion() == model.pokemon.PokemonType.ELECTRIC){
                     button.setBackground(new Color(209, 185, 14));
-                }else if(cell.getRegion() == model.PokemonType.GRASS){
+                }else if(cell.getRegion() == model.pokemon.PokemonType.GRASS){
                     button.setBackground(new Color(48, 185, 14));
-                }else if(cell.getRegion() == model.PokemonType.GROUND){
+                }else if(cell.getRegion() == model.pokemon.PokemonType.GROUND){
                     button.setBackground(new Color(103, 50, 9));
-                }else if(cell.getRegion() == model.PokemonType.WATER){
+                }else if(cell.getRegion() == model.pokemon.PokemonType.WATER){
                     button.setBackground(new Color(25, 198, 210));
                 }
                 

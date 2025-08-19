@@ -5,9 +5,9 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import model.BoardCell;
-import model.GameState;
-import model.Pokemon;
+import model.game.BoardCell;
+import model.game.GameState;
+import model.pokemon.Pokemon;
 import view.MainGameWindow;
 
 public class GameController {

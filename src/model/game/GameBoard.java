@@ -1,6 +1,9 @@
-package model;
+package model.game;
 
 import exception.InvalidPositionException;
+import model.pokemon.Pokemon;
+import model.pokemon.PokemonType;
+
 import java.io.Serializable;
 
 public class GameBoard implements Serializable {

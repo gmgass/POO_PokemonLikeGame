@@ -1,6 +1,9 @@
-package model;
+package model.game;
 
 import java.io.Serializable;
+
+import model.pokemon.Pokemon;
+import model.pokemon.PokemonType;
 
 public class BoardCell implements Serializable{
     private final PokemonType region;

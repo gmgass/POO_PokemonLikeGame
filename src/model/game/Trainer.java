@@ -1,8 +1,10 @@
-package model;
+package model.game;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import model.pokemon.Pokemon;
 
 
 public class Trainer implements Serializable {

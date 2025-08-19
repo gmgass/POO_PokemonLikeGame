@@ -1,11 +1,22 @@
 package view;
 
 import javax.swing.*;
+
+import controller.GamePersistence;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
 import model.*;
+import model.game.GameBoard;
+import model.game.GameState;
+import model.game.Trainer;
+import model.pokemon.Pokemon;
+import model.pokemon.PokemonElectric;
+import model.pokemon.PokemonGrass;
+import model.pokemon.PokemonGround;
+import model.pokemon.PokemonWater;
 
 
 public class WelcomeWindow extends JFrame{
@@ -46,9 +57,9 @@ public class WelcomeWindow extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e){
                 //CHAMAR JANELA SETUPWINDOW
-                model.GameBoard board = new GameBoard(8);
-                model.Trainer player = new Trainer("Jogador", false);
-                model.Trainer computer = new Trainer("Computador", true);
+                model.game.GameBoard board = new GameBoard(8);
+                model.game.Trainer player = new Trainer("Jogador", false);
+                model.game.Trainer computer = new Trainer("Computador", true);
                 
                 ArrayList<Pokemon> list = createCompletePokemonList();
 
@@ -122,7 +133,7 @@ public class WelcomeWindow extends JFrame{
 
 
     private ArrayList<Pokemon> createCompletePokemonList() {
-        ArrayList<model.Pokemon> list = new ArrayList<>();
+        ArrayList<model.pokemon.Pokemon> list = new ArrayList<>();
                     
                     list.add(new PokemonGround("Steelix", 100, 10));
                     list.add(new PokemonGround("Diglet", 100, 10));

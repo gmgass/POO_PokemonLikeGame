@@ -1,4 +1,4 @@
-package model;
+package model.pokemon;
 
 public class PokemonWater extends Pokemon {
 

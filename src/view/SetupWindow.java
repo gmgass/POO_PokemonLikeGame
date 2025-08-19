@@ -6,6 +6,11 @@ import javax.swing.*;
 
 import exception.InvalidPositionException;
 import model.*;
+import model.game.BoardCell;
+import model.game.GameBoard;
+import model.game.GameState;
+import model.pokemon.Pokemon;
+import model.pokemon.PokemonType;
 
 
 public class SetupWindow extends JFrame {

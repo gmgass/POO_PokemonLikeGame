@@ -1,4 +1,4 @@
-package model;
+package model.pokemon;
 
 import java.io.Serializable;
 import java.util.Random;
